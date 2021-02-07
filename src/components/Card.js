@@ -1,136 +1,53 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-function Card() {
+const Card = ({ img, creator, name, creatorImg, tags }) => {
   return (
-    <div class="container my-12 mx-auto px-4 md:px-12">
-      <div class="flex flex-wrap -mx-1 lg:-mx-4">
-        <div class="my-1 px-1 w-full md:w-1/2 lg:my-4 lg:px-4 lg:w-1/3">
-          <article class="overflow-hidden rounded-lg shadow-lg">
-            <a href="#">
-              <img
-                alt="Placeholder"
-                class="block h-auto w-full"
-                src={require("../imgs/image-banner.png")}
-              />
-            </a>
+    <div className="w-full sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/5 mb-2 m-2">
+      <Link to={`/env/${name}`}>
+        <article className="overflow-hidden rounded-lg shadow-lg">
+          <div style={{ position: "relative" }}>
+            <img
+              alt="Placeholder"
+              className="block h-auto w-full"
+              src={img != undefined ? img : require("../imgs/image-banner.png")}
+            />
 
-            <header class="flex items-center justify-between leading-tight p-2 md:p-4">
-              <h1 class="text-lg">
-                <a class="no-underline hover:underline text-black" href="#">
-                  Unity
-                </a>
-              </h1>
-              <p class="text-grey-darker text-sm">11/1/19</p>
-            </header>
+            <img
+              className="block rounded-full w-12 h-12 m-2"
+              style={{ position: "absolute", bottom: "0", left: "0" }}
+              src={
+                creatorImg != undefined
+                  ? creatorImg
+                  : "https://picsum.photos/32/32/?random"
+              }
+            />
+          </div>
 
-            <footer class="flex items-center justify-between leading-none p-2 md:p-4">
-              <a
-                class="flex items-center no-underline hover:underline text-black"
-                href="#"
-              >
-                <img
-                  alt="Placeholder"
-                  class="block rounded-full"
-                  src="https://picsum.photos/32/32/?random"
-                />
-                <p class="ml-2 text-sm">Author Name</p>
-              </a>
-              <a
-                class="no-underline text-grey-darker hover:text-red-dark"
-                href="#"
-              >
-                <span class="hidden">Like</span>
-                <i class="fa fa-heart"></i>
-              </a>
-            </footer>
-          </article>
-        </div>
+          <header className="flex items-center justify-between leading-tight p-2 md:p-4">
+            <div class="font-bold text-xl mb-2">
+              {name != undefined ? name : "undefined"}
+              <p className="text-sm">{creator}</p>
+            </div>
+          </header>
 
-        <div class="my-1 px-1 w-full md:w-1/2 lg:my-4 lg:px-4 lg:w-1/3">
-          <article class="overflow-hidden rounded-lg shadow-lg">
-            <a href="#">
-              <img
-                alt="Placeholder"
-                class="block h-auto w-full"
-                src={require("../imgs/image-banner.png")}
-              />
-            </a>
-
-            <header class="flex items-center justify-between leading-tight p-2 md:p-4">
-              <h1 class="text-lg">
-                <a class="no-underline hover:underline text-black" href="#">
-                  Article Title
-                </a>
-              </h1>
-              <p class="text-grey-darker text-sm">11/1/19</p>
-            </header>
-
-            <footer class="flex items-center justify-between leading-none p-2 md:p-4">
-              <a
-                class="flex items-center no-underline hover:underline text-black"
-                href="#"
-              >
-                <img
-                  alt="Placeholder"
-                  class="block rounded-full"
-                  src="https://picsum.photos/32/32/?random"
-                />
-                <p class="ml-2 text-sm">Author Name</p>
-              </a>
-              <a
-                class="no-underline text-grey-darker hover:text-red-dark"
-                href="#"
-              >
-                <span class="hidden">Like</span>
-                <i class="fa fa-heart"></i>
-              </a>
-            </footer>
-          </article>
-        </div>
-        <div class="my-1 px-1 w-full md:w-1/2 lg:my-4 lg:px-4 lg:w-1/3">
-          <article class="overflow-hidden rounded-lg shadow-lg">
-            <a href="#">
-              <img
-                alt="Placeholder"
-                class="block h-auto w-full"
-                src={require("../imgs/image-banner.png")}
-              />
-            </a>
-
-            <header class="flex items-center justify-between leading-tight p-2 md:p-4">
-              <h1 class="text-lg">
-                <a class="no-underline hover:underline text-black" href="#">
-                  Article Title
-                </a>
-              </h1>
-              <p class="text-grey-darker text-sm">11/1/19</p>
-            </header>
-
-            <footer class="flex items-center justify-between leading-none p-2 md:p-4">
-              <a
-                class="flex items-center no-underline hover:underline text-black"
-                href="#"
-              >
-                <img
-                  alt="Placeholder"
-                  class="block rounded-full"
-                  src="https://picsum.photos/32/32/?random"
-                />
-                <p class="ml-2 text-sm">Author Name</p>
-              </a>
-              <a
-                class="no-underline text-grey-darker hover:text-red-dark"
-                href="#"
-              >
-                <span class="hidden">Like</span>
-                <i class="fa fa-heart"></i>
-              </a>
-            </footer>
-          </article>
-        </div>
-      </div>
+          <footer className="flex items-center justify-between leading-none p-2 md:p-4">
+            {tags != undefined
+              ? tags.map((tag, key) => (
+                  <span
+                    class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                    key={key}
+                  >
+                    {" "}
+                    {tag}
+                  </span>
+                ))
+              : null}
+          </footer>
+        </article>
+      </Link>
     </div>
   );
-}
+};
 
 export default Card;
