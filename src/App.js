@@ -7,9 +7,24 @@ import app from "./utils/firebase.js";
 
 const db = app.firestore();
 
+let hello = async () => {
+  const citiesRef = db.collection("users");
+  const snapshot = await citiesRef
+    .where("email", "==", "luis.egvillarreal@gmail.com")
+    .get();
+  if (snapshot.empty) {
+    console.log("No matching documents.");
+    return;
+  }
+
+  snapshot.forEach((doc) => {
+    console.log(doc.id, "=>", doc.data());
+  });
+  console.log(snapshot);
+};
+
 function App() {
-  var citiesRef = db.collection("users");
-  console.log(citiesRef);
+  hello();
   return (
     <div class="relative bg-white overflow-hidden">
       <Landing />
