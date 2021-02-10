@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Switch>
         <Route exact path="/" component={Landing} />
-        <Route path="/env:id" component={Environment} />
+        <Route path="/env/:id" component={Environment} />
       </Switch>
     </Router>
   );

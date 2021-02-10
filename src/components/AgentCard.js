@@ -1,7 +1,39 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Card = ({ img, creator, name, creatorImg, tags, agents }) => {
+const AgentCard = ({ img, creator, name, creatorImg, tags, agents }) => {
+  let downloadAgentData = async () => {
+    // Create a reference to the file we want to download
+    var starsRef = storageRef.child("images/stars.jpg");
+
+    // Get the download URL
+    starsRef
+      .getDownloadURL()
+      .then((url) => {
+        // Insert url into an <img> tag to "download"
+      })
+      .catch((error) => {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case "storage/object-not-found":
+            // File doesn't exist
+            break;
+          case "storage/unauthorized":
+            // User doesn't have permission to access the object
+            break;
+          case "storage/canceled":
+            // User canceled the upload
+            break;
+
+          // ...
+
+          case "storage/unknown":
+            // Unknown error occurred, inspect the server response
+            break;
+        }
+      });
+  };
   return (
     <div className="w-full sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/5 mb-2 m-2">
       <Link to={`/env/${name}`}>
@@ -47,8 +79,7 @@ const Card = ({ img, creator, name, creatorImg, tags, agents }) => {
         </article>
       </Link>
     </div>
-      
   );
 };
 
-export default Card;
+export default AgentCard;
