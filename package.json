@@ -13,6 +13,7 @@
     "tailwindcss": "^1.1.2"
   },
   "scripts": {
+    "CI": "npm run build",
     "tailwind:css": "tailwind build src/styles/index.css -c tailwind.config.js -o src/styles/tailwind.css",
     "start": "npm run tailwind:css && react-scripts start",
     "build": "npm run tailwind:css && react-scripts build",
