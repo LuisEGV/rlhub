@@ -4,7 +4,7 @@ import app from "../utils/firebase.js";
 import Card from "../components/Card.js";
 const db = app.firestore();
 
-function Landing() {
+function Login() {
   const [envList, setenvList] = useState([{}]);
 
   useEffect(() => {
@@ -91,4 +91,4 @@ function Landing() {
   );
 }
 
-export default Landing;
+export default Login;

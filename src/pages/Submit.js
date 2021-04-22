@@ -4,7 +4,7 @@ import app from "../utils/firebase.js";
 import Card from "../components/Card.js";
 const db = app.firestore();
 
-function Landing() {
+function Submit() {
   const [envList, setenvList] = useState([{}]);
 
   useEffect(() => {
@@ -38,9 +38,7 @@ function Landing() {
         <main className="mt-10 mx-auto px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
           <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
             <span className="block xl:inline">It's time to bring AI to</span>
-            <span className="block text-indigo-600 xl:inline p-2">
-              Everyone
-            </span>
+            <span className="block text-indigo-600 xl:inline p-2">Submit</span>
           </h1>
           <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg  sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
             Imagine being able to help opensource your trained AI models and be
@@ -91,4 +89,4 @@ function Landing() {
   );
 }
 
-export default Landing;
+export default Submit;

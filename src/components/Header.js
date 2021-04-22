@@ -59,28 +59,28 @@ const Header = () => {
               </div>
             </div>
             <div className="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
-              <Link
-                href="/"
+              <a
+                href="/submit"
                 className="font-medium text-gray-500 hover:text-gray-900 p-1"
               >
                 Submit
-              </Link>
-              <Link
-                href="/Enviroment"
+              </a>
+              <a
+                href="/donate"
                 className="font-medium text-gray-500 hover:text-gray-900 p-1"
               >
                 Donate
-              </Link>
+              </a>
 
               <a
-                href="#"
+                href="/about"
                 className="font-medium text-gray-500 hover:text-gray-900 p-1"
               >
                 About Us
               </a>
 
               <a
-                href="#"
+                href="/login"
                 className="font-medium text-indigo-600 hover:text-indigo-500 p-1"
               >
                 Log in
