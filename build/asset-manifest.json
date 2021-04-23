@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/rlhub/static/css/main.29dfab80.chunk.css",
+    "main.js": "/rlhub/static/js/main.efff4c08.chunk.js",
+    "main.js.map": "/rlhub/static/js/main.efff4c08.chunk.js.map",
+    "runtime-main.js": "/rlhub/static/js/runtime-main.0696677b.js",
+    "runtime-main.js.map": "/rlhub/static/js/runtime-main.0696677b.js.map",
+    "static/js/2.4f62c791.chunk.js": "/rlhub/static/js/2.4f62c791.chunk.js",
+    "static/js/2.4f62c791.chunk.js.map": "/rlhub/static/js/2.4f62c791.chunk.js.map",
+    "index.html": "/rlhub/index.html",
+    "static/css/main.29dfab80.chunk.css.map": "/rlhub/static/css/main.29dfab80.chunk.css.map",
+    "static/js/2.4f62c791.chunk.js.LICENSE.txt": "/rlhub/static/js/2.4f62c791.chunk.js.LICENSE.txt",
+    "static/media/image-banner.png": "/rlhub/static/media/image-banner.c99ea7ca.png",
+    "static/media/unityAI.png": "/rlhub/static/media/unityAI.af6100e6.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.0696677b.js",
+    "static/js/2.4f62c791.chunk.js",
+    "static/css/main.29dfab80.chunk.css",
+    "static/js/main.efff4c08.chunk.js"
+  ]
+}
