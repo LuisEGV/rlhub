@@ -103,10 +103,6 @@ function Environment({ match }) {
                 <div class="mb-10">
                   <h1 class="font-bold uppercase text-2xl mb-5">
                     {envData != undefined ? envData.name : "Loading"}
-                    <br />
-                    {"("}
-                    {envData != undefined ? envData.creator : "Loading"}
-                    {")"}
                   </h1>
                   <p class="text-sm">
                     {envData != undefined ? envData.description : "Loading"}

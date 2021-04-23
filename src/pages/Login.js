@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header.js";
+import Footer from "../components/Footer.js";
 import app from "../utils/firebase.js";
 import firebase from "../utils/firebase";
 
@@ -390,6 +391,7 @@ function Login() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }

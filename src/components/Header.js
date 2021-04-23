@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 const Header = () => {
   const [menuToggle, setMenuToggle] = useState(false);
@@ -60,23 +60,10 @@ const Header = () => {
             </div>
             <div className="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
               <a
-                href="/submit"
-                className="font-medium text-gray-500 hover:text-gray-900 p-1"
-              >
-                Submit
-              </a>
-              <a
-                href="/donate"
-                className="font-medium text-gray-500 hover:text-gray-900 p-1"
-              >
-                Donate
-              </a>
-
-              <a
                 href="/about"
                 className="font-medium text-gray-500 hover:text-gray-900 p-1"
               >
-                About Us
+                About
               </a>
 
               <a

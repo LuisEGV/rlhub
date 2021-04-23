@@ -3,14 +3,20 @@ import { Link } from "react-router-dom";
 
 const Card = ({ img, creator, name, creatorImg, tags, agents }) => {
   return (
-    <div className="w-full sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/5 mb-2 m-2">
+    <div
+      className="w-full sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/5 mb-2 m-2"
+      style={{ minHeight: "20vh" }}
+    >
       <Link to={`/env/${name}`}>
-        <article className="overflow-hidden rounded-lg shadow-lg">
+        <article
+          className="overflow-hidden rounded-lg shadow-lg"
+          style={{ minHeight: "20vh" }}
+        >
           <div style={{ position: "relative" }}>
             <img
               alt="Placeholder"
               className="block h-auto w-full"
-              src={img != undefined ? img : require("../imgs/image-banner.png")}
+              src={img != undefined ? img : require("../imgs/unityAI.png")}
             />
 
             <img
@@ -19,7 +25,7 @@ const Card = ({ img, creator, name, creatorImg, tags, agents }) => {
               src={
                 creatorImg != undefined
                   ? creatorImg
-                  : "https://picsum.photos/32/32/?random"
+                  : require("../imgs/unityAI.png")
               }
             />
           </div>
@@ -47,7 +53,6 @@ const Card = ({ img, creator, name, creatorImg, tags, agents }) => {
         </article>
       </Link>
     </div>
-      
   );
 };
 
