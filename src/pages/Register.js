@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header.js";
+import Footer from "../components/Footer.js";
 import firebase from "../utils/firebase";
 import app from "../utils/firebase.js";
 import { Redirect } from "react-router-dom";
@@ -198,6 +199,7 @@ function Register() {
           </div>
         </div>
       </div>
+      <Footer />
       {redirect && <Redirect to={redirect} />}
     </div>
   );

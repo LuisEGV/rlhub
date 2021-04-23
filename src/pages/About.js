@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "../components/Header.js";
 import Footer from "../components/Footer.js";
-import app from "../utils/firebase.js";
-
-const db = app.firestore();
 
 function About() {
   return (

@@ -25,6 +25,7 @@ const Header = () => {
                 <a href="/">
                   <span className="sr-only">Workflow</span>
                   <img
+                    alt="..."
                     className="h-8 w-auto sm:h-10"
                     src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
                   />
@@ -119,23 +120,7 @@ const Header = () => {
               >
                 <div className="px-2 pt-2 pb-3 space-y-1" role="none">
                   <a
-                    href="#"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                    role="menuitem"
-                  >
-                    Submit
-                  </a>
-
-                  <a
-                    href="#"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                    role="menuitem"
-                  >
-                    Donate
-                  </a>
-
-                  <a
-                    href="#"
+                    href="/about"
                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                     role="menuitem"
                   >
@@ -143,11 +128,11 @@ const Header = () => {
                   </a>
 
                   <a
-                    href="#"
+                    href="/login"
                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                     role="menuitem"
                   >
-                    Log in
+                    sign In
                   </a>
                 </div>
               </div>

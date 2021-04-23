@@ -15,66 +15,9 @@ function Login() {
   const [model, setModel] = useState();
   const [environment, setEnvironment] = useState("Unity");
   const [gameEnv, setGameEnv] = useState("Crawler");
-  const [modelURL, setModelUrl] = useState();
   const [submit, setSubmitted] = useState();
 
   useEffect(() => {}, [user]);
-
-  let googleSignin = async () => {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope("email");
-    provider.addScope("profile");
-    let user = {};
-    await firebase
-      .auth()
-      .signInWithPopup(provider)
-      .then((result) => {
-        /** @type {firebase.auth.OAuthCredential} */
-        var credential = result.credential;
-
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = credential.accessToken;
-        // The signed-in user info.
-        var user = result.user;
-        user = {
-          email: result.user.email,
-          profilePicture: result.additionalUserInfo.profile.picture,
-        };
-        console.log(
-          "Found User through Google =>",
-          result,
-          "Made User=>",
-          user,
-          credential,
-          token
-        );
-        // ...
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    await db
-      .collection("users")
-      .doc(email)
-      .get()
-      .then((doc) => {
-        console.log(doc.id, " => ", doc.data());
-        if (doc.exists) {
-        } else {
-          db.collection("users")
-            .doc(email)
-            .set({ email: email, profilePicture: user.profilePicture })
-            .catch(function (error) {
-              console.log("Error getting documents: ", error);
-            });
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting documents: ", error);
-      });
-    setUser(user);
-  };
 
   let sendModel = async (model, description, environment, gameEnv) => {
     let modelCount = 1;
@@ -93,7 +36,6 @@ function Login() {
         snapshot.ref.getDownloadURL().then((downloadURL) => {
           console.log("added Logo");
           modelList["model"] = downloadURL;
-          setModelUrl(downloadURL);
         });
       });
 
@@ -229,11 +171,11 @@ function Login() {
       <Header />
 
       {user === undefined ? (
-        <div class="mt-5 md:mt-0 md:col-span-2">
+        <div class="mt-5 md:mt-0 md:col-span-2 ">
           <div class="shadow sm:rounded-md sm:overflow-hidden">
             <body>
               <div class="font-sans min-h-screen antialiased bg-indigo-600 pt-24 pb-5">
-                <div class="flex flex-col justify-center sm:w-96 sm:m-auto mx-5 mb-5 space-y-8">
+                <div class="flex flex-col justify-center sm:w-96 sm:m-auto mx-5 mb-5 space-y-8 m-15vh">
                   <h1 class="font-bold text-center text-4xl text-white">
                     Sign in to your account
                   </h1>

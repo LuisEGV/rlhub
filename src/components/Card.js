@@ -16,14 +16,15 @@ const Card = ({ img, creator, name, creatorImg, tags, agents }) => {
             <img
               alt="Placeholder"
               className="block h-auto w-full"
-              src={img != undefined ? img : require("../imgs/unityAI.png")}
+              src={img !== undefined ? img : require("../imgs/unityAI.png")}
             />
 
             <img
+              alt={name}
               className="block rounded-full w-12 h-12 m-2"
               style={{ position: "absolute", bottom: "0", left: "0" }}
               src={
-                creatorImg != undefined
+                creatorImg !== undefined
                   ? creatorImg
                   : require("../imgs/unityAI.png")
               }
@@ -32,13 +33,13 @@ const Card = ({ img, creator, name, creatorImg, tags, agents }) => {
 
           <header className="flex items-center justify-between leading-tight p-2 md:p-4">
             <div class="font-bold text-xl mb-2">
-              {name != undefined ? name : "undefined"}
+              {name !== undefined ? name : "undefined"}
               <p className="text-sm">{creator}</p>
             </div>
           </header>
 
           <footer className="flex items-center justify-between leading-none p-2 md:p-4">
-            {tags != undefined
+            {tags !== undefined
               ? tags.map((tag, key) => (
                   <span
                     class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
