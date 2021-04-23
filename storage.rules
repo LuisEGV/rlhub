@@ -10,6 +10,12 @@ service cloud.firestore {
      match /environments/{environments}{
       allow read,write;
     }
+     match /env/{environments}{
+      allow read,write;
+    }
+      match /env/{environments}/{game}{
+      allow read,write;
+    }
     match /env/{environments}/{game}/{models}{
       allow read,write;
     }

@@ -18,7 +18,7 @@ function Landing() {
 
   let GetEnv = async () => {
     let env_List = [];
-    const env_list = db.collection("environments");
+    const env_list = db.collection("env");
     const snapshot = await env_list.get();
     if (snapshot.empty) {
       console.log("No matching documents.");

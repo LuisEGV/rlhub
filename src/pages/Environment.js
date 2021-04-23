@@ -6,30 +6,49 @@ const db = app.firestore();
 
 function Environment({ match }) {
   const [envData, setenvData] = useState();
+  const [mainEnv, setmainEnv] = useState([]);
 
   useEffect(() => {
     getEnv();
   }, []);
 
   let getEnv = async () => {
-    let env;
-    await db
-      .collection("environments")
+    let env_List = [];
+    let mainEnv;
+    console.log(match.params.id);
+    let snapshot = await db
+      .collection("env")
       .doc(match.params.id)
+      .collection("environments")
       .get()
-      .then((doc) => {
-        if (!doc.exists) {
-          console.log("No such document!");
-        } else {
-          console.log("Document data:", doc.data());
-          env = doc.data();
-        }
-      })
       .catch(function (error) {
         console.log("Error getting documents: ", error);
       });
-    setenvData(env);
+    if (snapshot.empty) {
+      console.log("No matching documents.");
+      return;
+    }
+    snapshot.forEach((doc) => {
+      console.log(doc.id, "=>", doc.data());
+      env_List.push(doc.data());
+    });
+    setmainEnv(env_List);
+
+    const main_env = await db
+      .collection("env")
+      .doc(match.params.id)
+      .get()
+      .then((doc) => {
+        console.log(doc.id, " => ", doc.data());
+        if (doc.exists) {
+          mainEnv = doc.data();
+        }
+      });
+
+    console.log(mainEnv);
+    setenvData(mainEnv);
   };
+
   return (
     <div>
       <Header />
@@ -145,53 +164,72 @@ function Environment({ match }) {
                       <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Description
                       </th>
+                      <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Download Option
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <div class="flex items-center">
-                          <div class="flex-shrink-0 w-10 h-10">
-                            <img
-                              class="w-full h-full rounded-full"
-                              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                              alt=""
-                            />
+                    {mainEnv.map((model, key) => (
+                      <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          <div class="flex items-center">
+                            <div class="flex-shrink-0 w-10 h-10">
+                              <img
+                                class="w-full h-full rounded-full"
+                                src={
+                                  model.userImg || require("../imgs/960x0.jpg")
+                                }
+                                alt=""
+                              />
+                            </div>
+                            <div class="ml-3">
+                              <p class="text-gray-900 whitespace-no-wrap">
+                                {model.author}
+                              </p>
+                            </div>
                           </div>
-                          <div class="ml-3">
-                            <p class="text-gray-900 whitespace-no-wrap">
-                              Erkin Polat
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <p class="text-gray-900 whitespace-no-wrap">103</p>
-                      </td>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <p class="text-gray-900 whitespace-no-wrap">
-                          Jan 21, 2020
-                        </p>
-                      </td>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                          <span
-                            aria-hidden
-                            class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                          ></span>
-                          <span class="relative">Verified</span>
-                        </span>
-                      </td>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                          <span
-                            aria-hidden
-                            class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                          ></span>
-                          <span class="relative">CartPole-V2</span>
-                        </span>
-                      </td>
-                    </tr>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          <p class="text-gray-900 whitespace-no-wrap">103</p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          <p class="text-gray-900 whitespace-no-wrap">
+                            {model.uploadedDate}
+                            Jan 21, 2020
+                          </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                            <span
+                              aria-hidden
+                              class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+                            ></span>
+                            <span class="relative"> {model.status}</span>
+                          </span>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                            <span
+                              aria-hidden
+                              class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+                            ></span>
+                            <span class="relative"> {model.description}</span>
+                          </span>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                            <span
+                              aria-hidden
+                              class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+                            ></span>
+                            <a href={model.model} download class="relative">
+                              Download
+                            </a>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
                 <div class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">

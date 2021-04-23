@@ -140,10 +140,16 @@ function Login() {
         gameEnv: gameEnv,
         author: user.email,
         model: modelList["model"],
+        status: "Under Review",
+        uploadedDate: new Date(),
       })
       .catch(function (error) {
         console.log("Error getting documents: ", error);
       });
+    alert(
+      "Your Model Was Submitted. It will be under review, we will let you know when it becomes available."
+    );
+    setUser();
   };
 
   function modelFilter(event) {
@@ -314,7 +320,7 @@ function Login() {
                         environment={environment}
                         onChange={(event) => setEnvironment(event.target.value)}
                       >
-                        <option value="unity">Unity</option>
+                        <option value="Unity">Unity</option>
                         <option value="gym">Gym</option>
                         <option value="mujoco">Mujoco</option>
                         <option value="other">Other</option>
