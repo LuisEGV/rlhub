@@ -3,6 +3,8 @@ import Header from "../components/Header.js";
 import { BrowserRouter as Router } from "react-router-dom";
 import app from "../utils/firebase.js";
 const db = app.firestore();
+const storage = app.storage();
+var moment = require("moment"); // require
 
 function Environment({ match }) {
   const [envData, setenvData] = useState();
@@ -32,6 +34,7 @@ function Environment({ match }) {
       console.log(doc.id, "=>", doc.data());
       env_List.push(doc.data());
     });
+    console.log(env_List);
     setmainEnv(env_List);
 
     const main_env = await db
@@ -49,6 +52,32 @@ function Environment({ match }) {
     setenvData(mainEnv);
   };
 
+  const download = async (modelURL) => {
+    console.log("Downloaded");
+    storage
+      .refFromURL(modelURL)
+      .getDownloadURL()
+      .then((url) => {
+        // `url` is the download URL for 'images/stars.jpg'
+
+        // This can be downloaded directly:
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = "blob";
+        xhr.onload = (event) => {
+          var blob = xhr.response;
+        };
+        xhr.open("GET", url);
+        xhr.send();
+
+        // Or inserted into an <img> element
+        var img = document.getElementById("myimg");
+        img.setAttribute("src", url);
+      })
+      .catch((error) => {
+        // Handle any errors
+      });
+  };
+
   return (
     <div>
       <Header />
@@ -62,7 +91,7 @@ function Environment({ match }) {
                     src={
                       envData.img != undefined
                         ? envData.img
-                        : require("../imgs/image-banner.png")
+                        : require("../imgs/unityAI.png")
                     }
                     class="w-full relative z-10"
                     alt=""
@@ -162,6 +191,9 @@ function Environment({ match }) {
                         Status
                       </th>
                       <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Game Environment
+                      </th>
+                      <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Description
                       </th>
                       <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -171,14 +203,15 @@ function Environment({ match }) {
                   </thead>
                   <tbody>
                     {mainEnv.map((model, key) => (
-                      <tr>
+                      <tr key={key}>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                           <div class="flex items-center">
                             <div class="flex-shrink-0 w-10 h-10">
                               <img
                                 class="w-full h-full rounded-full"
                                 src={
-                                  model.userImg || require("../imgs/960x0.jpg")
+                                  model.userImg ||
+                                  "https://firebasestorage.googleapis.com/v0/b/rlhub-4e357.appspot.com/o/unityAI.png?alt=media&token=ae341976-b8e1-4963-a209-d4b4fcda246d"
                                 }
                                 alt=""
                               />
@@ -195,9 +228,31 @@ function Environment({ match }) {
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                           <p class="text-gray-900 whitespace-no-wrap">
-                            {model.uploadedDate}
-                            Jan 21, 2020
+                            {model.uploadedDate
+                              ? moment(model.uploadedDate.seconds).format(
+                                  "DD MMM YYYY hh:mm a"
+                                )
+                              : 0}
                           </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          {model.status === "Active" ? (
+                            <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                              <span
+                                aria-hidden
+                                class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+                              ></span>
+                              <span class="relative"> {model.status}</span>
+                            </span>
+                          ) : (
+                            <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                              <span
+                                aria-hidden
+                                class="absolute inset-0 bg-yellow-200 opacity-50 rounded-full"
+                              ></span>
+                              <span class="relative"> {model.status}</span>
+                            </span>
+                          )}
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                           <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
@@ -205,7 +260,7 @@ function Environment({ match }) {
                               aria-hidden
                               class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
                             ></span>
-                            <span class="relative"> {model.status}</span>
+                            <span class="relative"> {model.gameEnv}</span>
                           </span>
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -218,15 +273,17 @@ function Environment({ match }) {
                           </span>
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                            <span
-                              aria-hidden
-                              class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                            ></span>
-                            <a href={model.model} download class="relative">
-                              Download
-                            </a>
-                          </span>
+                          <a
+                            href={model.model}
+                            download
+                            onClick={() =>
+                              alert(
+                                "This page is run by university students and relies on donations to continoulsy to make AI accessible to the average person and incentivize more researchers to make their work public. Please consider donating, or feel free to send an encouragment message at luis.gonzalez@minerva.kgi.edu."
+                              )
+                            }
+                          >
+                            Download
+                          </a>
                         </td>
                       </tr>
                     ))}

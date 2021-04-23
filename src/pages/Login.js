@@ -335,6 +335,7 @@ function Login() {
                         <option game="3DBall">3DBall</option>
                         <option game="Cart-PoleV1">Cart-PoleV1</option>
                         <option game="Worm">Worm</option>
+                        <option game="Worm">Kart Microgame</option>
                         <option game="other">Other</option>
                       </select>
 
