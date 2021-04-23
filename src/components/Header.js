@@ -83,7 +83,7 @@ const Header = () => {
                 href="/login"
                 className="font-medium text-indigo-600 hover:text-indigo-500 p-1"
               >
-                Log in
+                Sign In
               </a>
             </div>
           </nav>

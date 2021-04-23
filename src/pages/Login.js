@@ -1,92 +1,388 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header.js";
 import app from "../utils/firebase.js";
-import Card from "../components/Card.js";
+import firebase from "../utils/firebase";
+
 const db = app.firestore();
+const storage = app.storage();
 
 function Login() {
-  const [envList, setenvList] = useState([{}]);
+  const [email, setEmail] = useState(false);
+  const [password, setPassword] = useState(false);
+  const [user, setUser] = useState();
+  const [description, setDescription] = useState("Write here...");
+  const [model, setModel] = useState();
+  const [environment, setEnvironment] = useState("Unity");
+  const [gameEnv, setGameEnv] = useState("Crawler");
+  const [modelURL, setModelUrl] = useState();
+  const [submit, setSubmitted] = useState();
 
-  useEffect(() => {
-    // Update the document title using the browser API
-    GetEnv();
-  }, []);
+  useEffect(() => {}, [user]);
 
-  useEffect(() => {
-    // Update the document title using the browser API
-  }, [envList]);
+  let googleSignin = async () => {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope("email");
+    provider.addScope("profile");
+    let user = {};
+    await firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then((result) => {
+        /** @type {firebase.auth.OAuthCredential} */
+        var credential = result.credential;
 
-  let GetEnv = async () => {
-    let env_List = [];
-    const env_list = db.collection("environments");
-    const snapshot = await env_list.get();
-    if (snapshot.empty) {
-      console.log("No matching documents.");
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        user = {
+          email: result.user.email,
+          profilePicture: result.additionalUserInfo.profile.picture,
+        };
+        console.log(
+          "Found User through Google =>",
+          result,
+          "Made User=>",
+          user,
+          credential,
+          token
+        );
+        // ...
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    await db
+      .collection("users")
+      .doc(email)
+      .get()
+      .then((doc) => {
+        console.log(doc.id, " => ", doc.data());
+        if (doc.exists) {
+        } else {
+          db.collection("users")
+            .doc(email)
+            .set({ email: email, profilePicture: user.profilePicture })
+            .catch(function (error) {
+              console.log("Error getting documents: ", error);
+            });
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+    setUser(user);
+  };
+
+  let sendModel = async (model, description, environment, gameEnv) => {
+    let modelCount = 1;
+    let modelList = [
+      {
+        description: description,
+        environment: environment,
+        gameEnv: gameEnv,
+        author: user.email,
+      },
+    ];
+    await storage
+      .ref(`userModels/${user.email}/${model.name}`)
+      .put(model)
+      .then((snapshot) => {
+        snapshot.ref.getDownloadURL().then((downloadURL) => {
+          console.log("added Logo");
+          modelList["model"] = downloadURL;
+          setModelUrl(downloadURL);
+        });
+      });
+
+    if (user["modelCount"] !== undefined) {
+      modelCount = user["modelCount"] + modelCount;
+    }
+
+    if (user["modelList"] !== undefined) {
+      user["modelList"] = user["modelList"].concat(modelList);
+    }
+
+    if (user["profilePicture"] !== undefined) {
+      user["profilePicture"] =
+        "https://firebasestorage.googleapis.com/v0/b/rlhub-4e357.appspot.com/o/userImages%2F960x0.jpg?alt=media&token=ee21a5a6-63d5-42e3-8321-d38b78cfbb70";
+    }
+
+    await db
+      .collection("users")
+      .doc(user.email)
+      .set({
+        email: user.email,
+        profilePicture: user["profilePicture"],
+        modelCount: modelCount,
+        modelList: modelList,
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+
+    console.log(
+      description,
+      environment,
+      gameEnv,
+      user.email,
+      modelList["model"]
+    );
+    await db
+      .collection("env")
+      .doc(environment)
+      .collection("environments")
+      .doc(gameEnv)
+      .set({
+        description: description,
+        environment: environment,
+        gameEnv: gameEnv,
+        author: user.email,
+        model: modelList["model"],
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+  };
+
+  function modelFilter(event) {
+    let file = event.target.files[0];
+    // Check
+
+    if (file.length === 0) {
       return;
     }
-    snapshot.forEach((doc) => {
-      console.log(doc.id, "=>", doc.data());
-      env_List.push(doc.data());
-    });
-    setenvList(env_List);
-    console.log(envList);
+    setModel(file);
+    setSubmitted(true);
+  }
+
+  let SignIn = async (email, password) => {
+    let problem = false;
+    let authexists = true;
+    let user = {};
+    /// Check
+    if (email === "" || !email.includes("@")) {
+      alert("Make Sure You Are Writting a Proper Email");
+      problem = true;
+    }
+    if (password === "") {
+      alert(
+        "ES:Asegúrese de agregar una contraseña/EN:Make Sure You Add a Password"
+      );
+      problem = true;
+    }
+    /// Check
+
+    if (!problem) {
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((value) => {
+          authexists = true;
+        })
+        .catch((error) => {
+          if (error.code === "auth/wrong-password") {
+            console.log("Wrong Email or Password");
+            alert("EN:Wrong Email Or Password");
+          } else if (error.code === "auth/invalid-email") {
+            alert("EN:Invalid-email");
+          } else if (error.code === "auth/user-not-found") {
+            alert("EN:No User Found With Such Email");
+          }
+          console.log("Err", error.code);
+        });
+
+      if (authexists) {
+        await db
+          .collection("users")
+          .where("email", "==", email)
+          .get()
+          .then(function (querySnapshot) {
+            if (querySnapshot.empty) {
+              console.log("User doesn't exist");
+            }
+            querySnapshot.forEach(function (doc) {
+              // doc.data() is never undefined for query doc snapshots
+              user = doc.data();
+              user["id"] = doc.id;
+              setUser(user);
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
+          });
+      }
+    }
+    console.log(user);
   };
+
   return (
     <div>
       <Header />
-      <div className="z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:w-full lg:pb-28 xl:pb-32">
-        <main className="mt-10 mx-auto px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-          <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-            <span className="block xl:inline">It's time to bring AI to</span>
-            <span className="block text-indigo-600 xl:inline p-2">
-              Everyone
-            </span>
-          </h1>
-          <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg  sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-            Imagine being able to help opensource your trained AI models and be
-            able to earn passive income from them. Here at AI-hub, that is our
-            mission.
-          </p>
-          <div className="mt-5 sm:mt-8 sm:flex justify-center ">
-            <div className="rounded-md shadow">
-              <a
-                href="/register"
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
-              >
-                Get started
-              </a>
-            </div>
-            <div className="mt-3 sm:mt-0 sm:ml-3">
-              <a
-                href="#"
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10"
-              >
-                View Models
-              </a>
-            </div>
+
+      {user === undefined ? (
+        <div class="mt-5 md:mt-0 md:col-span-2">
+          <div class="shadow sm:rounded-md sm:overflow-hidden">
+            <body>
+              <div class="font-sans min-h-screen antialiased bg-indigo-600 pt-24 pb-5">
+                <div class="flex flex-col justify-center sm:w-96 sm:m-auto mx-5 mb-5 space-y-8">
+                  <h1 class="font-bold text-center text-4xl text-white">
+                    Sign in to your account
+                  </h1>
+                  <form action="#">
+                    <div class="flex flex-col bg-white p-10 rounded-lg shadow space-y-6">
+                      <div class="flex flex-col space-y-1">
+                        <input
+                          type="text"
+                          name="username"
+                          id="username"
+                          class="border-2 rounded px-3 py-2 w-full focus:outline-none focus:border-blue-400 focus:shadow"
+                          placeholder="Username"
+                          onChange={(event) => setEmail(event.target.value)}
+                        />
+                      </div>
+
+                      <div class="flex flex-col space-y-1">
+                        <input
+                          type="password"
+                          name="password"
+                          id="password"
+                          class="border-2 rounded px-3 py-2 w-full focus:outline-none focus:border-blue-400 focus:shadow"
+                          placeholder="Password"
+                          onChange={(event) => setPassword(event.target.value)}
+                        />
+                      </div>
+
+                      <div class="flex flex-col-reverse sm:flex-row sm:justify-between items-center">
+                        <a
+                          href="/register"
+                          class="inline-block text-blue-500 hover:text-blue-800 hover:underline"
+                        >
+                          {" "}
+                          Make an account{" "}
+                        </a>
+                        <div
+                          type="submit"
+                          class="bg-blue-500 text-white font-bold px-5 py-2 rounded focus:outline-none shadow hover:bg-blue-700 transition-colors"
+                          onClick={() => SignIn(email, password)}
+                        >
+                          Log In
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="flex justify-center text-gray-500 text-sm">
+                    <p>&copy;2021. All right reserved.</p>
+                  </div>
+                </div>
+              </div>
+            </body>
           </div>
-        </main>
-      </div>
-      <div class="container mx-auto">
-        <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
-          <span className="block text-indigo-600 xl:inline p-2">
-            Browse Some Examples
-          </span>
-        </h1>
-        <div class="flex flex-wrap">
-          {Object.values(envList).map((env, keys) => (
-            <Card
-              key={keys}
-              img={env.img}
-              creatorImg={env.creatorImg}
-              name={env.name}
-              creator={env.creator}
-              description={env.description}
-              tags={env.tags}
-            />
-          ))}
         </div>
-      </div>
+      ) : (
+        <div class="mt-5 md:mt-0 md:col-span-2">
+          <div class="shadow sm:rounded-md sm:overflow-hidden">
+            <body>
+              <div class="font-sans min-h-screen antialiased bg-indigo-600 pt-24 pb-5">
+                <div class="flex flex-col justify-center sm:w-96 sm:m-auto mx-5 mb-5 space-y-8">
+                  <h1 class="font-bold text-center text-4xl text-white">
+                    You Are Logged In {user && user.email ? user.email : ""}{" "}
+                  </h1>
+                  <form action="#">
+                    <div class="flex flex-col bg-white p-10 rounded-lg shadow space-y-6">
+                      <div> Submit New Model </div>
+                      <input
+                        type="file"
+                        id="myFile"
+                        onChange={(event) => modelFilter(event)}
+                      ></input>
+
+                      <label>Description</label>
+                      <div>
+                        <textarea
+                          style={{}}
+                          value={description}
+                          onChange={(event) =>
+                            setDescription(event.target.value)
+                          }
+                        />
+                      </div>
+
+                      <label>What Enviroment Is you Model For?</label>
+                      <select
+                        environment={environment}
+                        onChange={(event) => setEnvironment(event.target.value)}
+                      >
+                        <option value="unity">Unity</option>
+                        <option value="gym">Gym</option>
+                        <option value="mujoco">Mujoco</option>
+                        <option value="other">Other</option>
+                      </select>
+
+                      <label>What Game Enviroment Is you Model For?</label>
+                      <select
+                        game={gameEnv}
+                        onChange={(event) => setGameEnv(event.target.value)}
+                      >
+                        <option game="Crawler">Crawler</option>
+                        <option game="3DBall">3DBall</option>
+                        <option game="Cart-PoleV1">Cart-PoleV1</option>
+                        <option game="Worm">Worm</option>
+                        <option game="other">Other</option>
+                      </select>
+
+                      <div class="flex flex-col-reverse sm:flex-row sm:justify-between items-center">
+                        {description &&
+                          description.length > 15 &&
+                          model &&
+                          submit && (
+                            <div class="px-4 py-3 bg-gray-50 sm:px-6">
+                              <div
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                onClick={() =>
+                                  sendModel(
+                                    model,
+                                    description,
+                                    environment,
+                                    gameEnv
+                                  )
+                                }
+                              >
+                                Submit
+                              </div>
+                            </div>
+                          )}
+                        <div class="flex flex-col bg-white p-10 rounded-lg shadow space-y-6">
+                          <div class="flex flex-col space-y-1">
+                            <div>Stats</div>
+                            <div>
+                              {" "}
+                              Your Model has been downloaded:{" "}
+                              {user && user.downloadsCount
+                                ? user.downloadsCount
+                                : 0}{" "}
+                              times.
+                            </div>
+                            <div>
+                              {" "}
+                              You have submitted:{" "}
+                              {user && user.modelCount
+                                ? user.modelCount
+                                : 0}{" "}
+                              models.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </body>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
