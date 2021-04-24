@@ -1,8 +1,10 @@
 ## How to locally run RLHUB🌮.
 
-### Download the proejct 
+### Download of fork the project
 
-### 1. `npm install` 
+In the commmand line inside this folder write the following commands.
+
+### 1.  `npm install` 
 
 ### 2. `npm install tailwindcss` 
 
