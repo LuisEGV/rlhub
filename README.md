@@ -1,7 +1,11 @@
-## Create React App with TailWind Configured
+## How to locally run RLHUB🌮.
 
-### 1. `npm install tailwindcss` 
+### Download the proejct 
 
-### 2. `npm start`
+### 1. `npm install` 
+
+### 2. `npm install tailwindcss` 
+
+### 3. `npm start`
 
 
