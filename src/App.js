@@ -7,6 +7,8 @@ import Environment from "./pages/Environment.js";
 import Register from "./pages/Register.js";
 import About from "./pages/About.js";
 import Login from "./pages/Login.js";
+import GraphPage from "./pages/Graph.js";
+import Grid from "./pages/Grid.js";
 
 function App() {
   return (
@@ -16,7 +18,9 @@ function App() {
         <Route exact path="/register" component={Register} />
         <Route exact path="/about" component={About} />
         <Route exact path="/login" component={Login} />
+        <Route path="/graph" component={GraphPage} />
         <Route path="/env/:id" component={Environment} />
+        <Route path="/grid" component={Grid} />
         <Route exact path="/*" component={Landing} />
       </Switch>
     </Router>
