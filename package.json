@@ -12,11 +12,13 @@
     "react": "^16.14.0",
     "react-d3-library": "^1.1.8",
     "react-dom": "^16.14.0",
+    "react-force-graph-3d": "^1.21.12",
     "react-graph-vis": "^1.0.7",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
     "react-vis-network-graph": "^3.0.1",
-    "tailwindcss": "^1.9.6"
+    "tailwindcss": "^1.9.6",
+    "three": "^0.141.0"
   },
   "scripts": {
     "ci": "npm run build",
